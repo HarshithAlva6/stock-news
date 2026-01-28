@@ -14,10 +14,7 @@ class StockViewModel: ObservableObject {
     @Published var summaries: [StockNews] = []
     @Published var isSyncing = false
     
-    private let client = SupabaseClient(
-        supabaseURL: URL(string: "https://zlygwwyybzbpcvlbliqk.supabase.co")!,
-        supabaseKey: "sb_secret_XImMz400eQx5Du-uYnd7_g_N84_oi6y"
-    )
+    private let client = supabase
     
     func fetchSummaries(for ticker: String) async {
         do {
@@ -28,7 +25,7 @@ class StockViewModel: ObservableObject {
                 .execute()
                 .value
         } catch {
-            print("Fetch Error \(error)")
+            print("Fetch Error: \(error)")
         }
     }
     

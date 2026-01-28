@@ -27,17 +27,17 @@ struct StockView: View {
                 List(vm.summaries) { news in
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
-                            Text(item.ticker)
+                            Text(news.ticker)
                                 .font(.headline)
                                 .foregroundColor(.blue)
                             
                             Spacer()
                             
-                            if let price = item.price {
+                            if let price = news.price {
                                 Text("$\(String(format: "%.2f", price))")
                                     .font(.headline)
                                 
-                                if let change = item.price_change, let percent = item.percent_change {
+                                if let change = news.price_change, let percent = news.percent_change {
                                     let color: Color = change >= 0 ? .green : .red
                                     let sign = change >= 0 ? "+" : ""
                                     Text("\(sign)\(String(format: "%.2f", change)) (\(String(format: "%.2f", percent))%)")
@@ -47,17 +47,12 @@ struct StockView: View {
                             }
                         }
                         
-                        Text(item.summary)
+                        Text(news.summary)
                             .font(.body)
-                        
-                        Text(item.created_at, style: .date)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(3)
                         
                         Text(news.created_at, style: .date)
                             .font(.caption)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.secondary)
                     }
                     .padding(.vertical, 4)
                 }

@@ -23,9 +23,15 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const genAI = new GoogleGenerativeAI(geminiKey);
 
-    // 1. Fetch from Finnhub (Corrected dates for your 2026 current time)
+    // 1. Fetch from Finnhub (Dynamic dates)
+    const today = new Date().toISOString().split("T")[0];
+    const thirtyDaysAgo =
+      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split(
+        "T",
+      )[0];
+
     const newsRes = await fetch(
-      `https://finnhub.io/api/v1/company-news?symbol=${ticker}&from=2025-01-01&to=2026-01-17&token=${finnhubKey}`,
+      `https://finnhub.io/api/v1/company-news?symbol=${ticker}&from=${thirtyDaysAgo}&to=${today}&token=${finnhubKey}`,
     );
     const news = await newsRes.json();
 
@@ -38,7 +44,7 @@ Deno.serve(async (req) => {
     }
 
     // 2. Summarize & Embed with Gemini 1.5 Flash
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const summaryResult = await model.generateContent(
       `Summarize for ${ticker}: ${headlines}`,
     );

@@ -43,8 +43,7 @@ class StockViewModel: ObservableObject {
                 switch action {
                 case .insert(let insertAction):
                     do {
-                        // FIX: Explicitly tell the decoder what type to return
-                        let newNews = try insertAction.decodeRecord(as: StockNews.self, decoder: <#JSONDecoder#>)
+                        let newNews = try insertAction.decodeRecord(as: StockNews.self, decoder: JSONDecoder())
                         
                         DispatchQueue.main.async {
                             guard let self = self else { return }

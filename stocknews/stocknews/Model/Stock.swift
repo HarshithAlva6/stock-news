@@ -7,7 +7,7 @@
 import Foundation
 
 struct StockNews: Identifiable, Codable {
-    var id: Int
+    var id: String
     let ticker: String
     let summary: String
     let created_at: Date

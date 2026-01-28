@@ -26,12 +26,32 @@ struct StockView: View {
                 // The Output Rendering Section
                 List(vm.summaries) { news in
                     VStack(alignment: .leading, spacing: 8) {
-                        // Using available fields from StockNews
-                        Text(news.ticker)
-                            .font(.headline)
+                        HStack {
+                            Text(item.ticker)
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                            
+                            Spacer()
+                            
+                            if let price = item.price {
+                                Text("$\(String(format: "%.2f", price))")
+                                    .font(.headline)
+                                
+                                if let change = item.price_change, let percent = item.percent_change {
+                                    let color: Color = change >= 0 ? .green : .red
+                                    let sign = change >= 0 ? "+" : ""
+                                    Text("\(sign)\(String(format: "%.2f", change)) (\(String(format: "%.2f", percent))%)")
+                                        .font(.subheadline)
+                                        .foregroundColor(color)
+                                }
+                            }
+                        }
                         
-                        Text(news.summary)
-                            .font(.subheadline)
+                        Text(item.summary)
+                            .font(.body)
+                        
+                        Text(item.created_at, style: .date)
+                            .font(.caption)
                             .foregroundColor(.secondary)
                             .lineLimit(3)
                         

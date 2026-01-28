@@ -23,7 +23,16 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const genAI = new GoogleGenerativeAI(geminiKey);
 
-    // 1. Fetch from Finnhub (Dynamic dates)
+    // 1. Fetch Price from Finnhub
+    const quoteRes = await fetch(
+      `https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${finnhubKey}`,
+    );
+    const quote = await quoteRes.json();
+    const price = quote.c; // Current price
+    const change = quote.d; // Change
+    const percentChange = quote.dp; // Percent change
+
+    // 2. Fetch News from Finnhub (Dynamic dates)
     const today = new Date().toISOString().split("T")[0];
     const thirtyDaysAgo =
       new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split(
@@ -43,7 +52,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    // 2. Summarize & Embed with Gemini 1.5 Flash
+    // 3. Summarize & Embed with Gemini 1.5 Flash
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const summaryResult = await model.generateContent(
       `Summarize for ${ticker}: ${headlines}`,
@@ -56,18 +65,24 @@ Deno.serve(async (req) => {
     const embedResult = await embedModel.embedContent(summary);
     const embedding = embedResult.embedding.values;
 
-    // 3. Insert into Postgres
+    // 4. Insert into Postgres
     const { error } = await supabase.from("ticker_news").insert({
       ticker,
       summary,
       embedding,
+      price,
+      price_change: change,
+      percent_change: percentChange,
     });
 
     if (error) throw error;
 
-    return new Response(JSON.stringify({ success: true, summary }), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ success: true, summary, price, change }),
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   } catch (err: any) {
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,

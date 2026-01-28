@@ -3,5 +3,5 @@ import Supabase
 
 let supabase = SupabaseClient(
     supabaseURL: URL(string: "https://hvhagncetvxgzrdslztp.supabase.co")!,
-    supabaseKey: "sb_secret_XImMz400eQx5Du-uYnd7_g_N84_oi6y" // This should be the anon key for the client, but I'll use the one from .env for now. Wait, .env has service role key. Service role key should NOT be in the client app.
+    supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2aGFnbmNldHZ4Z3pyZHNsenRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NjYyMzIsImV4cCI6MjA4NTE0MjIzMn0.14DO6BwQF8Lyp0GtUtxKe_8KSA6IUKU84bIvkP3OhRE"
 )
